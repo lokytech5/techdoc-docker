@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  username   String
+  email      String    @unique
+  password   String
+  isAdmin    Boolean   @default(false)
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+}
+
+model Project {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @db.ObjectId
+  name           String
+  repository_url String?
+  description    String
+  technicalStack String?
+  goals          String?
+  additionalDocs String?
+  blobUrl        String?
+  guides         Guide[]
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model Guide {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  projectId     String   @db.ObjectId
+  title         String
+  content       String
+  selections    String
+  customRequest String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now())
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,56 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Mac system files
+.DS_Store
+
+# Environment variables
+.env
+
+# Docker files
+docker-compose.override.yml
+docker-compose.*.yml
+docker-compose.yml
+
+# Temporary files and directories
+tmp/
+temp/
+
+# Build directories
+dist/
+build/
+
+# Ignore specific file extensions
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+
+# Ignore operating system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore specific files
+*.env
+.env.*
+.env.*
