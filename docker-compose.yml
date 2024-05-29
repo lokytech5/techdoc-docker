@@ -1,0 +1,41 @@
+
+services:
+  app:
+    container_name: techdoc_app
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: ["npm", "run", "start"]
+
+  seed:
+    container_name: techdoc_seed
+    build: ./backend
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: ["npm", "run", "seed"]  # Command to run the seed script
+    restart: "no"  # Prevents the seeding service from restarting
+
+  db:
+    build: ./mongodb-rs
+    container_name: techdoc_db
+    command: ["mongod", "--bind_ip_all", "--replSet", "rs0"]
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: admin
+      MONGO_REPLICA_HOST: techdoc_db
+      MONGO_REPLICA_PORT: 27017
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
