@@ -13,7 +13,9 @@ async function initApp() {
     await dbConnect();
 
     app.use(cors({
-        origin: url
+        origin: url,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization']
     }));
 
     app.use(express.json())
