@@ -4,14 +4,14 @@ import bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-    const passwordHash = await bcrypt.hash('test123', 10);
+    const passwordHash = await bcrypt.hash('password', 10);  // Hashing the password
 
-    
+    // Try to create a user without a transaction
     const newUser = await prisma.user.create({
         data: {
-            username: 'test123',
-            email: 'test123@gmail.com',
-            password: passwordHash,
+            username: 'testuser',
+            email: 'test@gmail.com',
+            password: passwordHash,  // Using the hashed password
             isAdmin: false,
         },
     });

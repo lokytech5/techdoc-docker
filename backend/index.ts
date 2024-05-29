@@ -16,7 +16,6 @@ async function initApp() {
         origin: url
     }));
 
-    await dbConnect();
     app.use(express.json())
     app.use('/api/users', userRouter);
     app.use('/api/auth', authRouter);
