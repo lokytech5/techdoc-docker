@@ -8,7 +8,7 @@ interface PythonScriptInput {
 export async function callPythonScript(text: string): Promise<{ keywords: string[], summary: string }> {
     return new Promise((resolve, reject) => {
         const pythonPath = '/opt/venv/bin/python'; // Path to Python binary in the virtual environment
-        const scriptPath ='/app/backend/python/model.py'; // Path to your Python script in Docker
+        const scriptPath = '/app/backend/python/model.py'; // Path to your Python script in Docker
 
         const process = spawn(pythonPath, [scriptPath]);
         let output = '';
