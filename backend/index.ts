@@ -8,12 +8,15 @@ import { guideRouter } from "./routes/guideRoutes";
 import { codeAnalysisRouter } from "./routes/codeAnaysisRoutes";
 
 const app = express();
+const url = process.env.URL
 
 async function initApp() {
     await dbConnect(); // Ensure database connection before proceeding
 
     app.use(cors({
-        origin: 'http://localhost:3000' // Allow only the frontend to make requests
+        origin: url,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization']
     }));
 
     app.use(express.json());
