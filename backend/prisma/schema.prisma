@@ -31,9 +31,6 @@ model Project {
   repository_url String?
   description    String
   technicalStack String?
-  goals          String?
-  additionalDocs String?
-  blobUrl        String?
   guides         Guide[]
   created_at     DateTime @default(now())
   updated_at     DateTime @default(now())
@@ -50,4 +47,13 @@ model Guide {
   created_at    DateTime @default(now())
   updated_at    DateTime @default(now())
   project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model CodeAnalysis {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  code           String
+  openAIAnalysis String
+  eslintAnalysis String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
 }

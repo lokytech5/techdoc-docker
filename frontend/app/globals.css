@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: 700; 
+}
+
+h2 {
+  font-size: 30px;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+h4 {
+  font-size: 20px;
+  font-weight: 400; 
+}
+
+h5 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+h6 {
+  font-size: 16px;
+  font-weight: 500; 
+}
+
+p {
+  font-size: 16px; 
+}
+
+
+.active-link {
+  color: #ffffff;
+  background-color: #ff00ff;
+  border-radius: 8px;
+}
+
+.inactive-link {
+  color: #d1d5db;
+}
+
+.project-background {
+  background: linear-gradient(to bottom, #f1ebe9 0%, #efeaeb 50%, #f1ebe9 100%);
+}
+
+/* .bg-synthwave {
+  background: linear-gradient(to br, #6a3093, #a044ff);
+} */
+
+.sidebar-banner, .login-banner, .register-banner {
+  padding: 8px;
+  border-radius: 8px;
+  transform: scale(1);
+  transition: transform 0.5s;
+}
+
+.sidebar-banner:hover, .login-banner:hover, .register-banner:hover {
+  transform: scale(1.05);
+}
+
+.home-container h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700; 
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  text-align: center; 
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ff0099;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+  margin-top: 12px; 
+  padding-right: 10px;
+  color: #fff;
+}
+
+
+
+
+

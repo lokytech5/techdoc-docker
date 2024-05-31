@@ -1,3 +1,4 @@
+// src/services/openaiService.ts
 
 import { OpenAI } from "openai";
 
@@ -18,10 +19,33 @@ interface ProjectData {
     additionalDocs?: string | null;
 }
 
-async function generateTechnicalGuide(projectData: ProjectData, customPrompt: string): Promise<string> {
+async function generateTechnicalGuide(projectData: ProjectData): Promise<string> {
+    const technicalStackFormatted = projectData.technicalStack ? projectData.technicalStack.split(',').map(tech => tech.trim()).join(', ') : 'Not provided';
+
     const messages = [
-        { role: "system", content: "You are a helpful assistant designed to generate detailed technical guides." },
-        { role: "user", content: customPrompt }
+        {
+            role: "system",
+            content: "You are a helpful assistant designed to generate detailed technical guides. Please follow the structure of Introduction, Setup, Configuration, and Examples."
+        },
+        {
+            role: "user",
+            content: `Create a detailed technical guide for the project:
+            - Project Name: ${projectData.name}
+            - Description: ${projectData.description}
+            - Repository URL: ${projectData.repository_url || 'Not provided'}
+            - Technical Stack: ${technicalStackFormatted}
+            - Goals: ${projectData.goals || 'Not provided'}
+            - Additional Documents: ${projectData.additionalDocs || 'Not provided'}
+
+            Structure the guide to include detailed sections on:
+            1. Introduction - Provide a thorough overview of the project.
+            2. Setup - Describe the installation process and initial configuration.
+            3. Configuration - Outline further configuration steps and dependencies.
+            4. Usage Examples - Detail how to use the project effectively.
+            5. Best Practices - Discuss maintaining and scaling the project.
+            6. Troubleshooting - List common issues and their solutions.
+            Ensure each section is detailed and informative.`
+        }
     ];
 
 

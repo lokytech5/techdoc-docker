@@ -1,9 +1,8 @@
 import multer from "multer";
 
-const inMermoryStorage = multer.memoryStorage();
-
+const inMemoryStorage = multer.memoryStorage();
 const uploadStrategy = multer({
-    storage: inMermoryStorage
+    storage: inMemoryStorage
 }).single('file');
 
 export default uploadStrategy;

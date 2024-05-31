@@ -1,31 +1,30 @@
 import express from "express";
-import { dbConnect } from "./db/dbConnection";
-import { userRouter } from "./routes/userRoutes";
-import { authRouter } from "./routes/authRoutes";
-import { projectRouter } from "./routes/projectRoute";
-import { guideRouter } from "./routes/guideRoutes";
 import cors from "cors";
+import {userRouter} from './routes/userRoutes'
+import { dbConnect } from "./db/dbConnection";
+import { authRoute } from "./routes/authRoutes";
+import { projectRouter } from "./routes/projectRoutes";
+import { guideRouter } from "./routes/guideRoutes";
+import { codeAnalysisRouter } from "./routes/codeAnaysisRoutes";
 
 const app = express();
-const url = process.env.URL
 
 async function initApp() {
-    await dbConnect();
+    await dbConnect(); // Ensure database connection before proceeding
 
     app.use(cors({
-        origin: url,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization']
+        origin: 'http://localhost:3000' // Allow only the frontend to make requests
     }));
 
-    app.use(express.json())
+    app.use(express.json());
     app.use('/api/users', userRouter);
-    app.use('/api/auth', authRouter);
+    app.use('/api/auth', authRoute);
     app.use('/api/projects', projectRouter);
     app.use('/api/guides', guideRouter);
-
+    app.use('/api/analyze', codeAnalysisRouter );
     const PORT = 8000;
     app.listen(PORT, () => console.log(`listening to port ${PORT}`));
 }
 
 initApp().catch(console.error);
+
