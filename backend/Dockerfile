@@ -45,8 +45,9 @@ RUN npx prisma generate
 # Copy the rest of the application code
 COPY . .
 
-# Copy the Python script into the working directory
-COPY python/model.py /app/backend/python/model.py
+# Copy the Python script and models into the working directory
+COPY backend/python/model.py /app/backend/python/model.py
+COPY backend/python/models/models--sshleifer--distilbart-cnn-12-6 /app/backend/python/models/models--sshleifer--distilbart-cnn-12-6
 
 # Expose the port the app runs on
 EXPOSE 8000

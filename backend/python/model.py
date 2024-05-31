@@ -9,10 +9,10 @@ import warnings
 warnings.filterwarnings("ignore", message="torch.utils._pytree._register_pytree_node is deprecated")
 warnings.filterwarnings("ignore", message="resume_download is deprecated")
 
-
 # Load spaCy model and transformer pipeline
 nlp = spacy.load('en_core_web_sm')
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+model_path = "/app/backend/python/models/models--sshleifer--distilbart-cnn-12-6"
+summarizer = pipeline("summarization", model=model_path)
 
 def extract_keywords(text):
     doc = nlp(text)
