@@ -1,17 +1,17 @@
 import axios from "axios";
 import useUserStore from "./useUserStore";
 
-const url = process.env.URL_FRONTEND
+
 
 const apiClient = axios.create({
-    baseURL: url
+    baseURL: 'http://16.171.173.72:8000/api'
 });
 // baseURL: 'http://13.48.78.236:8000/api'
 // baseURL: 'http://localhost:8000/api'
 
 // Authenticated client
 const authApiClient = axios.create({
-    baseURL: url,
+    baseURL: 'http://16.171.173.72:8000/api',
     headers: {
         'Content-Type': 'application/json'
       }
