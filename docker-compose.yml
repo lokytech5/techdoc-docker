@@ -19,15 +19,6 @@ services:
     networks:
       - app-network
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
   backend:
     container_name: techdoc_app
     build: ./backend
@@ -40,18 +31,6 @@ services:
       - python-service
     networks:
       - app-network
-
-  seed:
-    container_name: techdoc_seed
-    build: ./backend
-    env_file:
-      - .env
-    depends_on:
-      - db
-    command: ["npm", "run", "seed"]  # Command to run the seed script
-    networks:
-      - app-network
-    restart: "no"  # Prevents the seeding service from restarting
 
   python-service:
     build: ./backend/python

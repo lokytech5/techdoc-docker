@@ -6,7 +6,6 @@
   "scripts": {
     "start": "nodemon index.ts",
     "prisma:generate": "prisma generate",
-    "seed": "ts-node prisma/seed.ts",
     "build": "npm run prisma:generate && tsc",
     "postinstall": "npm run prisma:generate"
   },
