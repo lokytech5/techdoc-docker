@@ -37,7 +37,7 @@ services:
       - .env
     depends_on:
       - db
-    command: ["npm", "run", "start"]
+      - python-service
     networks:
       - app-network
 
@@ -53,8 +53,16 @@ services:
       - app-network
     restart: "no"  # Prevents the seeding service from restarting
 
-  
+  python-service:
+    build: ./backend/python
+    container_name: techdoc_python_service
+    ports:
+      - "5001:5001"
+    networks:
+      - app-network
+    restart: unless-stopped
 
+  
 volumes:
   mongodb_data:
 

@@ -3,7 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import { generateTechnicalGuide } from '../service/openaiService';
 import { generateTechnicalGuide2 } from '../service/openaiService2';
-import { callPythonScript } from '../service/pythonService';
+import callPythonService from '../utils/callPythonService';
+
 
 interface ProjectData {
     name: string;
@@ -69,7 +70,7 @@ export const generateCustomGuide = async (req: Request, res: Response) => {
 
     try {
         //call python script
-        const pythonResult = await callPythonScript(projectData.description);
+        const pythonResult = await callPythonService(projectData.description);
         
         const guideContent = await generateTechnicalGuide2(projectData, prompt);
         const guide = await prisma.guide.create({
