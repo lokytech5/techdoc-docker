@@ -1,5 +1,5 @@
 # Stage 1: Download and cache model files
-FROM --platform=linux/arm64 python:3.9-slim-buster as model-downloader
+FROM python:3.9-slim-buster as model-downloader
 
 # Install system dependencies
 RUN apt-get update && \
@@ -11,8 +11,8 @@ RUN apt-get update && \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install AWS CLI (ARM-compatible version)
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install
 
@@ -42,7 +42,7 @@ ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 RUN python /app/download_model.py
 
 # Stage 2: Build the final image
-FROM --platform=linux/arm64 python:3.9-slim-buster
+FROM python:3.9-slim-buster
 
 # Install system dependencies
 RUN apt-get update && \
@@ -54,8 +54,8 @@ RUN apt-get update && \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install AWS CLI (ARM-compatible version)
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install
 
