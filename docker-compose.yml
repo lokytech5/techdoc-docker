@@ -33,7 +33,12 @@ services:
       - app-network
 
   python-service:
-    build: ./backend/python
+    build:
+      context: ./backend/python
+      args:
+        AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+        AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+        AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
     container_name: techdoc_python_service
     ports:
       - "5001:5001"

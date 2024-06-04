@@ -1,24 +1,34 @@
-import os
+import sys
 import json
 import spacy
-from flask import Flask, request, jsonify
-from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer, AutoConfig
+import os
 import warnings
+import logging
+from flask import Flask, request, jsonify
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Ignore specific warnings
 warnings.filterwarnings("ignore", message="torch.utils._pytree._register_pytree_node is deprecated")
 warnings.filterwarnings("ignore", message="resume_download is deprecated")
 
-# Load spaCy model
-nlp = spacy.load('en_core_web_sm')
-
 # Define the local model directory
 local_model_path = os.path.join(os.path.dirname(__file__), "sshleifer--distilbart-cnn-12-6")
 
+# Load spaCy model
+logger.info("Loading spaCy model...")
+nlp = spacy.load('en_core_web_sm')
+logger.info("Loaded spaCy model.")
+
 # Load the model, tokenizer, and config from the local directory
+logger.info("Loading summarization model and tokenizer...")
 tokenizer = AutoTokenizer.from_pretrained(local_model_path)
 model = AutoModelForSeq2SeqLM.from_pretrained(local_model_path)
 summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
+logger.info("Loaded summarization model and tokenizer.")
 
 def extract_keywords(text):
     doc = nlp(text)
@@ -34,8 +44,8 @@ app = Flask(__name__)
 
 @app.route('/endpoint', methods=['POST'])
 def handle_request():
-    input_data = request.json
-    text = input_data.get('text')
+    data = request.get_json()
+    text = data.get('text')
     
     if text:
         keywords = extract_keywords(text)
@@ -44,8 +54,10 @@ def handle_request():
             'keywords': keywords,
             'summary': summary
         }
+        logger.info("Processing complete. Outputting results.")
         return jsonify(output)
     else:
+        logger.error("No text provided")
         return jsonify({'error': 'No text provided'}), 400
 
 if __name__ == "__main__":

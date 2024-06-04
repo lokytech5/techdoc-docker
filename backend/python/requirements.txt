@@ -2,7 +2,10 @@ spacy
 transformers
 torch
 tokenizers
+boto3
+moto
 pydantic
+pytest
 Flask==2.0.3
 werkzeug==2.0.3
 

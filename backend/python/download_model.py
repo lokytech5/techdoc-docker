@@ -1,54 +1,52 @@
+# download_model.py
+import boto3
+from botocore.config import Config
 import os
-import time
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, AutoConfig
-from requests.exceptions import ConnectionError, Timeout
-from transformers.utils import logging
 
-# Set logging level to INFO
-logging.set_verbosity_info()
+# Print environment variables for debugging
+print("AWS_ACCESS_KEY_ID:", os.getenv("AWS_ACCESS_KEY_ID"))
+print("AWS_SECRET_ACCESS_KEY:", os.getenv("AWS_SECRET_ACCESS_KEY"))
+print("AWS_DEFAULT_REGION:", os.getenv("AWS_DEFAULT_REGION"))
 
-def download_and_save_model(model_name, save_directory, retries=5, initial_delay=10):
-    """
-    Download and save the model and tokenizer files locally.
-    
-    Parameters:
-    model_name (str): The model name or identifier from Hugging Face.
-    save_directory (str): The local directory where the model files should be saved.
-    retries (int): Number of retry attempts.
-    initial_delay (int): Initial delay between retries in seconds.
-    """
-    if not os.path.exists(save_directory):
-        os.makedirs(save_directory, exist_ok=True)
+# Ensure environment variables are not empty
+if not all([os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"), os.getenv("AWS_DEFAULT_REGION")]):
+    raise ValueError("One or more environment variables are missing")
 
-    def download_with_retries(download_func, *args, **kwargs):
-        delay = initial_delay
-        for attempt in range(retries):
-            try:
-                return download_func(*args, **kwargs)
-            except (ConnectionError, Timeout) as e:
-                logging.get_logger().info(f"Attempt {attempt + 1} failed: {e}")
-                if attempt < retries - 1:
-                    logging.get_logger().info(f"Retrying in {delay} seconds...")
-                    time.sleep(delay)
-                    delay *= 2  # Exponential backoff
-        raise RuntimeError("Failed to download after several attempts")
+# Configure boto3 client with increased timeout
+config = Config(connect_timeout=300, read_timeout=300)
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    region_name=os.getenv("AWS_DEFAULT_REGION"),
+    config=config
+)
 
-    # Download the model
-    model = download_with_retries(AutoModelForSeq2SeqLM.from_pretrained, model_name, timeout=600)
-    model.save_pretrained(save_directory)
-    
-    # Download the tokenizer
-    tokenizer = download_with_retries(AutoTokenizer.from_pretrained, model_name, timeout=600)
-    tokenizer.save_pretrained(save_directory)
-    
-    # Download the config
-    config = download_with_retries(AutoConfig.from_pretrained, model_name, timeout=600)
-    config.save_pretrained(save_directory)
+# Define the S3 bucket and model file details
+bucket_name = "techdoc-model"
+model_folder = "sshleifer--distilbart-cnn-12-6"
 
-    print(f"Model, tokenizer, and config for '{model_name}' have been saved to '{save_directory}'.")
+# Define the local model directory
+local_model_path = os.path.join(os.getcwd(), model_folder)
 
-if __name__ == "__main__":
-    model_name = "sshleifer/distilbart-cnn-12-6"  # Replace with your model name
-    save_directory = "/Users/lokosman/Desktop/model"  # Replace with a valid writable directory path
+# Create local model directory if it doesn't exist
+if not os.path.exists(local_model_path):
+    os.makedirs(local_model_path)
 
-    download_and_save_model(model_name, save_directory)
+# List of model files to download
+model_files = ['config.json', 'pytorch_model.bin', 'tokenizer.json', 'tokenizer_config.json', 'vocab.json', 'merges.txt']
+
+# Download the model files from S3
+for file_name in model_files:
+    s3_key = f"{model_folder}/{file_name}"
+    local_file_path = os.path.join(local_model_path, file_name)
+    print(f"Downloading {s3_key} to {local_file_path}")
+    try:
+        s3_client.download_file(bucket_name, s3_key, local_file_path)
+        print(f"Successfully downloaded {s3_key}")
+    except s3_client.exceptions.NoSuchKey:
+        print(f"File {s3_key} not found in bucket {bucket_name}")
+    except Exception as e:
+        print(f"Error downloading {s3_key}: {e}")
+
+print("Model files download process completed.")
