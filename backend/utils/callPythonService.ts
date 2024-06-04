@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 // Define the expected return type of the Python service
+
+
 interface PythonServiceResponse {
     keywords: string[];
     summary: string;
