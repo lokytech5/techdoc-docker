@@ -8,10 +8,10 @@ import { guideRouter } from "./routes/guideRoutes";
 import { codeAnalysisRouter } from "./routes/codeAnaysisRoutes";
 
 const app = express();
-const url = process.env.URL
+const url = "https://techdoc-iota.vercel.app/"
 
 async function initApp() {
-    await dbConnect(); // Ensure database connection before proceeding
+    await dbConnect();
 
     app.use(cors({
         origin: url,
