@@ -1,6 +1,4 @@
-
 services:
-
   db:
     build: ./mongodb-rs
     container_name: techdoc_db
@@ -12,6 +10,8 @@ services:
       MONGO_INITDB_DATABASE: admin
       MONGO_REPLICA_HOST: techdoc_db
       MONGO_REPLICA_PORT: 27017
+    mem_limit: 600m
+    cpus: 0.7
     ports:
       - "27017:27017"
     volumes:
@@ -21,6 +21,7 @@ services:
 
   backend:
     container_name: techdoc_app
+    restart: always
     build: ./backend
     ports:
       - "8000:8000"
@@ -46,10 +47,9 @@ services:
       - app-network
     restart: unless-stopped
 
-  
 volumes:
   mongodb_data:
 
 networks:
   app-network:
-     driver: bridge
+    driver: bridge
