@@ -1,38 +1,31 @@
 #!/bin/sh
 
-# Start MongoDB without authentication and with binding to all IPs
+# Start MongoDB without authentication
 mongod --port $MONGO_REPLICA_PORT --replSet rs0 --bind_ip_all & 
 MONGOD_PID=$!
 
-# Wait for MongoDB to start
-while ! mongo --port $MONGO_REPLICA_PORT --eval "db.stats()"; do
+# Wait for MongoDB to be ready
+echo "⏳ Waiting for MongoDB to start..."
+until mongo --port $MONGO_REPLICA_PORT --eval "db.stats()" >/dev/null 2>&1; do
     sleep 1
 done
 
 # Initiate the replica set
-mongo --eval "rs.initiate({_id: 'rs0', members: [{ _id: 0, host: '$MONGO_REPLICA_HOST:$MONGO_REPLICA_PORT' }]});"
+echo "⚙️ Initiating replica set..."
+mongo --port $MONGO_REPLICA_PORT --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: '$MONGO_REPLICA_HOST:$MONGO_REPLICA_PORT' }] });"
 
-# Keep the container running
-echo "REPLICA SET ONLINE"
+# Wait for it to settle
+sleep 3
+
+# Create a root user for authentication
+echo "🔐 Creating root user for MongoDB..."
+mongo admin --port $MONGO_REPLICA_PORT --eval "db.createUser({ user: 'root', pwd: 'example', roles: [ { role: 'root', db: 'admin' } ] });"
+
+# (Optional) Create the app user Prisma will use (if not using root)
+# mongo admin --port $MONGO_REPLICA_PORT -u root -p example --authenticationDatabase admin --eval \
+# "db.createUser({ user: 'appuser', pwd: 'appuserpassword', roles: [ { role: 'readWrite', db: 'admin' } ] });"
+
+echo "✅ MongoDB initialized with root user."
+
+# Keep container running
 wait $MONGOD_PID
-
-
-# Start MongoDB in the background
-# mongod --port $MONGO_REPLICA_PORT --replSet rs0 --bind_ip 0.0.0.0 &
-# MONGOD_PID=$!
-
-# # Prepare the replica set initialization command
-# INIT_REPL_CMD="rs.initiate({_id: 'rs0', members: [{ _id: 0, host: '$MONGO_REPLICA_HOST:$MONGO_REPLICA_PORT' }]})"
-
-# # Wait for MongoDB to start by checking the connection to the port
-# while ! mongo --port $MONGO_REPLICA_PORT --eval "db.stats()"; do
-#     sleep 1
-# done
-
-# # Initiate the replica set
-# mongo admin --port $MONGO_REPLICA_PORT --eval "$INIT_REPL_CMD"
-
-# # Keep the container running
-# echo "REPLICA SET ONLINE"
-# wait $MONGOD_PID
-
