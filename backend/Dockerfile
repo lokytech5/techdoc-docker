@@ -22,4 +22,6 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["npm", "start"]
+RUN npm install -g ts-node
+
+ENTRYPOINT ["sh", "./entrypoint.sh"]
