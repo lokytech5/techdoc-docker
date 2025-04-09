@@ -45,14 +45,17 @@ RUN python /app/download_model.py
 FROM python:3.9-slim-buster
 
 # Install system dependencies
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update && apt-get install -y \
     build-essential \
+    gcc \
+    g++ \
     libffi-dev \
     libssl-dev \
+    python3-dev \
     curl \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
@@ -71,7 +74,8 @@ RUN python3 -m venv /opt/venv
 
 # Activate the virtual environment and install Python dependencies
 RUN /opt/venv/bin/pip install --upgrade pip setuptools wheel && \
-    /opt/venv/bin/pip install -r /app/requirements.txt
+    /opt/venv/bin/pip install --prefer-binary --no-cache-dir -r /app/requirements.txt
+
 
 # Download the spaCy model with increased timeout
 RUN /opt/venv/bin/python -m spacy download en_core_web_sm
