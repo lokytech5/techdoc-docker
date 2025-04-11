@@ -25,7 +25,7 @@ async function initApp() {
     app.use('/api/projects', projectRouter);
     app.use('/api/guides', guideRouter);
     app.use('/api/analyze', codeAnalysisRouter );
-    const PORT = 8000;
+    const PORT = 8001;
     app.listen(PORT, () => console.log(`listening to port ${PORT}`));
 }
 
