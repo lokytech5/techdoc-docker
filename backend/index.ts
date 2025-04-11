@@ -8,13 +8,16 @@ import { guideRouter } from "./routes/guideRoutes";
 import { codeAnalysisRouter } from "./routes/codeAnaysisRoutes";
 
 const app = express();
-const url = "https://techdoc-iota.vercel.app/"
+const allowedOrigins = [
+    "https://techdoc-iota.vercel.app",
+    "http://localhost:3000"
+  ];
 
 async function initApp() {
     await dbConnect();
 
     app.use(cors({
-        origin: url,
+        origin: allowedOrigins,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization']
     }));
